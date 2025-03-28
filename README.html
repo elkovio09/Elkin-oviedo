@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elkin Oviedo - Conversor de Gramos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      /* Fondo de mineros artesanales */
+      background: url('https://source.unsplash.com/1600x900/?mineros,artesanales') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-top: 10%;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #ff9800;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e68900;
+    }
+    #resultado {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Elkin Oviedo - Conversor de Gramos</h2>
+    <label for="gramos">Ingresa gramos:</label>
+    <input type="number" id="gramos" placeholder="Ejemplo: 7">
+    <button onclick="convertir()">Convertir</button>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    function convertir() {
+      let gramos = parseFloat(document.getElementById("gramos").value);
+      if (isNaN(gramos) || gramos <= 0) {
+        document.getElementById("resultado").innerHTML = "Por favor, ingresa un número válido.";
+        return;
+      }
+      
+      const CASTELLANO_GR = 4.6;
+      const TOMIN_GR = CASTELLANO_GR / 8;   // ≈ 0.575 gramos
+      const REAL_GR = CASTELLANO_GR / 4;     // 1.15 gramos
+      const GRANO_GR = CASTELLANO_GR / 96;   // ≈ 0.04792 gramos
+      const GRAINS_PER_REAL = 6;            // 6 granos = 1 real
+      
+      let castellanos = Math.floor(gramos / CASTELLANO_GR);
+      let resto = gramos - (castellanos * CASTELLANO_GR);
+      let tomines = Math.floor(resto / TOMIN_GR);
+      resto = resto - (tomines * TOMIN_GR);
+      let reales = Math.floor(resto / REAL_GR);
+      resto = resto - (reales * REAL_GR);
+      let granos = Math.round(resto / GRANO_GR);
+      
+      // Ajuste: convertir cada grupo de 6 granos en 1 real
+      if (granos >= GRAINS_PER_REAL) {
+        reales += Math.floor(granos / GRAINS_PER_REAL);
+        granos = granos % GRAINS_PER_REAL;
+      }
+      // Ajuste: convertir 2 reales en 1 tomín
+      if (reales >= 2) {
+        tomines += Math.floor(reales / 2);
+        reales = reales % 2;
+      }
+      
+      document.getElementById("resultado").innerHTML =
+        gramos + " gramos equivalen a:<br>" +
+        "<strong>" + castellanos + "</strong> castellano(s),<br>" +
+        "<strong>" + tomines + "</strong> tomín(es),<br>" +
+        "<strong>" + reales + "</strong> real(es) y<br>" +
+        "<strong>" + granos + "</strong> grano(s).";
+    }
+  </script>
+</body>
+</html>
